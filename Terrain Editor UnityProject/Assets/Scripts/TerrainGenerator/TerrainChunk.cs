@@ -425,7 +425,7 @@ public class TerrainChunk : MonoBehaviour
 
     public void SetVertexHeight(int i, float height)
     {
-        vertices[i] = new Vector3(vertices[i].x, height, vertices[i].z);
+        vertices[i] = new Vector3(vertices[i].x, height * MyTerrain.heightMultiplier, vertices[i].z);
     }
 
     public void SetVerticesToTileHeight(C_Tile t)

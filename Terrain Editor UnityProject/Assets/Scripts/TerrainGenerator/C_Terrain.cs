@@ -22,6 +22,8 @@ public class C_Terrain : MonoBehaviour
 
     public C_Tile borderTile;
 
+    public float heightMultiplier;
+
     TerrainFromImage TFI;
 
     private void Awake()
