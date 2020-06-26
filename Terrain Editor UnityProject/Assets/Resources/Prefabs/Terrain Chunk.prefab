@@ -52,7 +52,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d112552dd45d35f4eb58fea1339378a7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,4 +107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3c983933e9e2241a980ab0ec02fa88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 0}
+  MyTerrain: {fileID: 0}
+  id: 0
+  firstTileIndex: 0
+  ChunkCoordX: 0
+  ChunkCoordZ: 0

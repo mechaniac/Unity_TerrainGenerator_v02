@@ -49,6 +49,9 @@ public class C_Terrain : MonoBehaviour
         //TestTilesFunction();
 
         UpdateAllTiles();
+
+        //CleanUpTerrain();
+
         //int testX = 6;
         //int testZ = 4;
 
@@ -77,6 +80,13 @@ public class C_Terrain : MonoBehaviour
         }
     }
 
+    void CleanUpTerrain()
+    {
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            Destroy(tiles[i].gameObject);
+        }
+    }
 
     void TestTilesFunction()
     {
@@ -125,7 +135,8 @@ public class C_Terrain : MonoBehaviour
 
     void InitializeChunks()
     {
-
+        float offsetX =(chunkCountX*tilesPerChunkX*tileSize)/2f;
+        float offsetZ =(chunkCountZ*tilesPerChunkZ*tileSize)/2f;
         chunks = new TerrainChunk[chunkCountX * chunkCountZ];
 
         for (int z = 0, i = 0; z < chunkCountZ; z++)
@@ -134,7 +145,7 @@ public class C_Terrain : MonoBehaviour
             {
                 TerrainChunk c = chunks[i] = Instantiate(chunkPrefab);
                 c.id = i;
-                c.transform.position = new Vector3(x * tileSize * tilesPerChunkX, 0, z * tileSize * tilesPerChunkZ);
+                c.transform.position = new Vector3(x * tileSize * tilesPerChunkX -offsetX, 0, z * tileSize * tilesPerChunkZ -offsetZ);
                 c.transform.parent = transform;
                 c.MyTerrain = this;
                 c.ChunkCoordX = x;

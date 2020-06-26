@@ -13,6 +13,7 @@ public class TerrainChunk : MonoBehaviour
     public int id;
 
     Vector3[] vertices;
+    Vector2[] uv;
 
     int cutCount = 2;
 
@@ -21,6 +22,7 @@ public class TerrainChunk : MonoBehaviour
     int vertexCount;
 
     C_Tile[] tiles;
+    MeshCollider collider;
 
     public int firstTileIndex;
 
@@ -39,10 +41,20 @@ public class TerrainChunk : MonoBehaviour
         CalculateVertexCount();
 
         vertices = new Vector3[vertexCount];
+
+
         mesh = GetComponent<MeshFilter>().mesh;
+        collider = GetComponent<MeshCollider>();
 
         SetChunkVertices();
+
         AdjustGridOffsets(.6f);
+        ApplyUVCoordinates();
+
+
+
+
+
         SetChunkTriangles();
 
         GenerateTilesPerChunk();
@@ -112,6 +124,17 @@ public class TerrainChunk : MonoBehaviour
 
     }
 
+    void ApplyUVCoordinates()
+    {
+        uv = new Vector2[vertices.Length];
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            uv[i] = new Vector2((float)vertices[i].x / (MyTerrain.tilesPerChunkX * MyTerrain.tileSize), (float)vertices[i].z / (MyTerrain.tilesPerChunkZ * MyTerrain.tileSize));
+        }
+        mesh.uv = uv;
+
+    }
+
     void SetChunkTriangles()
     {
         int[] triangles = new int[6 * verticesX * verticesZ];
@@ -176,9 +199,12 @@ public class TerrainChunk : MonoBehaviour
             AlignTopVerticesWithNeighbor(tiles[i]);
             AlignBottomVerticesWithNeighbor(tiles[i]);
             AlignRightVerticesWithNeighbor(tiles[i]);
-            
+
             AlignLeftVerticesWithNeighbor(tiles[i]);
             AlignCornerVerticesWithNeighbours(tiles[i]);
+
+            SetBorderVerticesHeight(Direction.Bottom, 0f);
+
         }
     }
 
@@ -248,9 +274,9 @@ public class TerrainChunk : MonoBehaviour
 
         int startVertex = GetFirstVertexIndexFromTile(t);
 
-        v[0] = startVertex + 3 +verticesX;
+        v[0] = startVertex + 3 + verticesX;
         v[1] = v[0] + verticesX;
-        
+
         return v;
     }
 
@@ -260,9 +286,9 @@ public class TerrainChunk : MonoBehaviour
 
         int startVertex = GetFirstVertexIndexFromTile(t);
 
-        v[0] = startVertex +verticesX;
+        v[0] = startVertex + verticesX;
         v[1] = v[0] + verticesX;
-        
+
 
         return v;
     }
@@ -274,7 +300,7 @@ public class TerrainChunk : MonoBehaviour
         int startVertex = GetFirstVertexIndexFromTile(t);
 
 
-        v[0] = startVertex +1;
+        v[0] = startVertex + 1;
         v[1] = v[0] + 1;
 
         return v;
@@ -287,9 +313,9 @@ public class TerrainChunk : MonoBehaviour
 
         int startVertex = GetFirstVertexIndexFromTile(t);
 
-        v[0] = startVertex + verticesX * 3 +1;
+        v[0] = startVertex + verticesX * 3 + 1;
         v[1] = v[0] + 1;
-        
+
         return v;
     }
 
@@ -313,7 +339,7 @@ public class TerrainChunk : MonoBehaviour
 
         // Lower Left
         float lowerLeftCornerHeight = tile.height + tile.neighbourBottom.height + tile.neighbourLeft.height;
-        if(tile.neighbourBottom.name == "Border Tile")
+        if (tile.neighbourBottom.name == "Border Tile")
         {
             lowerLeftCornerHeight = lowerLeftCornerHeight / 3f;
         }
@@ -323,11 +349,11 @@ public class TerrainChunk : MonoBehaviour
             lowerLeftCornerHeight = lowerLeftCornerHeight / 4f;
         }
         SetVertexHeight(v[0], lowerLeftCornerHeight);
-        
+
 
         // Upper Right
         float upperRightCornerHeight = tile.height + tile.neighbourTop.height + tile.neighbourRight.height;
-        if(tile.neighbourTop.name == "Border Tile")
+        if (tile.neighbourTop.name == "Border Tile")
         {
             upperRightCornerHeight = upperRightCornerHeight / 3f;
         }
@@ -337,11 +363,11 @@ public class TerrainChunk : MonoBehaviour
             upperRightCornerHeight = upperRightCornerHeight / 4f;
         }
         SetVertexHeight(v[1], upperRightCornerHeight);
-        
+
 
         // Lower Right
         float lowerRightCornerHeight = tile.height + tile.neighbourBottom.height + tile.neighbourRight.height;
-        if(tile.neighbourRight.name == "Border Tile")
+        if (tile.neighbourRight.name == "Border Tile")
         {
             lowerRightCornerHeight = lowerRightCornerHeight / 3f;
         }
@@ -354,7 +380,7 @@ public class TerrainChunk : MonoBehaviour
 
         // Upper Left
         float upperLeftCornerHeight = tile.height + tile.neighbourTop.height + tile.neighbourLeft.height;
-        if(tile.neighbourTop.name == "Border Tile")
+        if (tile.neighbourTop.name == "Border Tile")
         {
             upperLeftCornerHeight = upperLeftCornerHeight / 3f;
         }
@@ -415,8 +441,50 @@ public class TerrainChunk : MonoBehaviour
     }
 
 
+    void SetBorderVerticesHeight(Direction dir, float height)
+    {
+        if (ChunkCoordZ == 0) { SetBottomBorderHeight(height); }
 
+        if (ChunkCoordZ == MyTerrain.chunkCountZ - 1) { SetTopBorderHeight(height); }
 
+        if (ChunkCoordX == 0) { SetLeftBorderHeight(height); }
+
+        if (ChunkCoordX == MyTerrain.chunkCountX - 1) { SetRightBorderHeight(height); }
+    }
+
+    void SetBottomBorderHeight(float height)
+    {
+        for (int i = 0; i < verticesX; i++)
+        {
+            SetVertexHeight(i, height);
+
+        }
+    }
+
+    void SetTopBorderHeight(float height)
+    {
+        for (int i = (verticesX * verticesZ) - verticesX; i < verticesX * verticesZ; i++)
+        {
+            SetVertexHeight(i, height);
+
+        }
+    }
+
+    void SetLeftBorderHeight(float height)
+    {
+        for (int i = 0; i <= verticesX * verticesZ - verticesX; i += verticesX)
+        {
+            SetVertexHeight(i, height);
+        }
+    }
+
+    void SetRightBorderHeight(float height)
+    {
+        for (int i = verticesX -1; i < verticesX * verticesZ; i += verticesX)
+        {
+            SetVertexHeight(i, height);
+        }
+    }
 
     public void OffsetVertexHeight(int i, float height)
     {
@@ -443,7 +511,16 @@ public class TerrainChunk : MonoBehaviour
     public void UpdateChunkMesh()
     {
         mesh.vertices = vertices;
+        collider.sharedMesh = mesh;
         mesh.RecalculateNormals();
     }
 
+}
+
+public enum Direction
+{
+    Left,
+    Top,
+    Right,
+    Bottom
 }
