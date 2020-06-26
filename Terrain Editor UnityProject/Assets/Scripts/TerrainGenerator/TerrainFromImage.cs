@@ -39,10 +39,15 @@ public class TerrainFromImage : MonoBehaviour
         }
     }
 
-
-    public void SetHeightFromMap()
+    public void SetHeightFromTexture()
     {
         if (tileCountX == 0) InitializeFields();
+        SetHeightFromSmallerTexture();
+    }
+
+    public void SetHeightFromBiggerTexture()
+    {
+        
 
         int xStop = TerrainMap.width > tileCountX ? tileCountX : TerrainMap.width;
         int zStop = TerrainMap.height > tileCountZ ? tileCountZ : TerrainMap.height;
@@ -53,7 +58,21 @@ public class TerrainFromImage : MonoBehaviour
             for (int x = 0; x < xStop; x++, i++)
             {
 
-                MyTerrain.tiles[i].height = 3 * (TerrainMap.GetPixel(MyTerrain.tiles[i].xCoord, MyTerrain.tiles[i].zCoord).b);
+                MyTerrain.tiles[i].height =  (TerrainMap.GetPixel(MyTerrain.tiles[i].xCoord, MyTerrain.tiles[i].zCoord).b);
+            }
+        }
+    }
+
+    public void SetHeightFromSmallerTexture()
+    {
+        Debug.Log($"Terrainmap width: {TerrainMap.width}, height: {TerrainMap.height}");
+        for (int i = 0; i < MyTerrain.tiles.Length; i++)
+        {
+            int _x = MyTerrain.tiles[i].xCoord;
+            int _z = MyTerrain.tiles[i].zCoord;
+            if (_x < TerrainMap.width && _z < TerrainMap.height)
+            {
+                MyTerrain.tiles[i].height = (TerrainMap.GetPixel(MyTerrain.tiles[i].xCoord, MyTerrain.tiles[i].zCoord).b);
             }
         }
     }

@@ -419,10 +419,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a92b2502e377a214eb9d01ebce75173f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkCountX: 4
-  chunkCountZ: 4
-  tilesPerChunkX: 8
-  tilesPerChunkZ: 8
+  chunkCountX: 7
+  chunkCountZ: 5
+  tilesPerChunkX: 12
+  tilesPerChunkZ: 9
   tilesPerChunk: 0
   tileSize: 5
   chunkPrefab: {fileID: 7886693275529910295, guid: 39451085782f8aa4dbbfeea2c5000cff,
@@ -431,6 +431,7 @@ MonoBehaviour:
     type: 3}
   tiles: []
   borderTile: {fileID: 0}
+  heightMultiplier: 1
 --- !u!4 &1035082051
 Transform:
   m_ObjectHideFlags: 0
@@ -457,4 +458,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1007818d69b6204c90639a160bb78a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TerrainMap: {fileID: 2800000, guid: 1cfa0ade4b5b1d0469c4b0ba6ead2924, type: 3}
+  TerrainMap: {fileID: 2800000, guid: a9bd21474a9831f4f9927ab69083e65f, type: 3}

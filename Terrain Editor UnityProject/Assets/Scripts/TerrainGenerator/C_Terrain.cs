@@ -42,15 +42,20 @@ public class C_Terrain : MonoBehaviour
 
 
         TFI = GetComponent<TerrainFromImage>();
-        TFI.SetHeightFromMap();
+        TFI.SetHeightFromTexture();
 
 
         //TFI.LogPixels();
         //TestTilesFunction();
 
         UpdateAllTiles();
-        Debug.Log($"index = {GetTileFromCoordinates(27, 30)}");
+        //int testX = 6;
+        //int testZ = 4;
+
+        //Debug.Log($"index of tile {testX}/{testZ} = {GetTileFromCoordinates(testX, testZ)}");
         //TestTilesFunction2();
+
+
     }
 
     void UpdateAllTiles()
@@ -123,9 +128,9 @@ public class C_Terrain : MonoBehaviour
 
         chunks = new TerrainChunk[chunkCountX * chunkCountZ];
 
-        for (int z = 0, i = 0; z < chunkCountX; z++)
+        for (int z = 0, i = 0; z < chunkCountZ; z++)
         {
-            for (int x = 0; x < chunkCountZ; x++, i++)
+            for (int x = 0; x < chunkCountX; x++, i++)
             {
                 TerrainChunk c = chunks[i] = Instantiate(chunkPrefab);
                 c.id = i;
